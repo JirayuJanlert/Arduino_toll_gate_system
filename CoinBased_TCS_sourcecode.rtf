@@ -1,0 +1,152 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2509
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset222 Thonburi;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\ri0\partightenfactor0
+
+\f0\fs20 \cf0 #include <Servo.h>\
+\
+#\
+define sensorPin1 A2# define sensorPin2 A3#include <Wire.h>\
+\
+#include <LiquidCrystal_I2C.h>\
+\
+LiquidCrystal_I2C lcd(0x27, 16, 2);\
+\
+Servo myservo;\
+\
+int ledPin = 2;\
+int ledPin2 = 3;\
+\
+int senVal1 = 0;\
+int senVal2 = 0;\
+int servoPos = 0;\
+\
+int coinpin = 7;\
+unsigned long duration;\
+\
+int count = 0;\
+int state = 0;\
+\
+void setup() \{\
+  Serial.begin(9600);\
+  myservo.attach(9);\
+  myservo.write(90);\
+\
+  pinMode(coinpin, INPUT);\
+\
+  pinMode(ledPin, OUTPUT); // sets the pin as output\
+  pinMode(ledPin2, OUTPUT);\
+  pinMode(sensorPin1, INPUT);\
+  pinMode(sensorPin2, INPUT); // sets the pin as input\
+\
+  lcd.init(); // initialize the lcd \
+  lcd.init();\
+  // Print a message to the LCD.\
+  lcd.backlight();\
+  lcd.setCursor(0, 0);\
+  lcd.print("Welcome! Please");\
+  lcd.setCursor(3, 1);\
+  lcd.print("Insert a Coin");\
+  delay(0.001);\
+\
+\}\
+\
+void loop() \{\
+  duration = pulseIn(coinpin, HIGH, 1000000);\
+  float time = duration / 1000.00;\
+\
+  if (time > 2) \{\
+\
+    count = count + 1;\
+  \}\
+\
+  if (time == 0) \{\
+    if (count > 3) \{\
+      state = 1;\
+      lcd.clear();\
+      lcd.setCursor(1, 0);\
+      lcd.print("Thank You!");\
+      lcd.setCursor(1, 1);\
+      lcd.print("Please Proceed");\
+    \}\
+    count = 0;\
+  \}\
+  senVal1 = digitalRead(sensorPin1); //
+\f1\fs22 \'cd\'e8\'d2\'b9\'a4\'e8\'d2\'ca\'d1\'ad\'ad\'d2\'b3
+\f0  
+\fs20 digital 
+\f1\fs22 \'a2\'d2
+\f0\fs20 8
+\fs22  
+\f1 \'b7\'d5\'e8\'b5\'e8\'cd\'a1\'d1\'ba
+\f0  
+\f1 \'e0\'ab\'e7\'b9\'e0\'ab\'cd\'c3\'ec\'b5\'c3\'c7\'a8\'a8\'d1\'ba\'c7\'d1\'b5\'b6\'d8
+\f0  
+\fs20 IR Infrared\
+  senVal2 = digitalRead(sensorPin2);\
+  if (senVal1 == 0) \{ // 
+\f1\fs22 \'a4\'e8\'d2
+\f0  
+\f1 \'e0\'bb\'e7\'b9
+\f0  
+\fs20 0
+\fs22  
+\f1 \'b5\'c3\'c7\'a8\'a8\'d1\'ba\'e0\'a8\'cd\'c7\'d1\'b5\'b6\'d8
+\f0  
+\f1 \'ca\'d1\'e8\'a7\'e3\'cb\'e9\'e4\'bf
+\f0  
+\fs20 LED 
+\f1\fs22 \'b5\'d4\'b4
+\f0\fs20 \
+    state = 0;\
+    myservo.write(90);\
+    lcd.setCursor(0, 0);\
+    lcd.clear();\
+    lcd.print("Vehicle Exit");\
+    lcd.setCursor(7, 1);\
+    lcd.print("The Gate");\
+    delay(1500);\
+    lcd.clear();\
+    lcd.setCursor(0, 0);\
+    lcd.print("Welcome! Please");\
+    lcd.setCursor(2, 1);\
+    lcd.print("Insert a Coin");\
+    delay(3000);\
+\
+  \}\
+\
+  if (senVal2 == 0 && state > 0) \{\
+    myservo.write(servoPos);\
+    digitalWrite(ledPin2, HIGH); // 
+\f1\fs22 \'ca\'d1\'e8\'a7\'e3\'cb\'e9
+\f0  
+\fs20 LED 
+\f1\fs22 \'b5\'d4\'b4\'ca\'c7\'e8\'d2\'a7
+\f0\fs20 \
+    lcd.clear();\
+    lcd.setCursor(2, 0);\
+    lcd.print("Have a safe");\
+    lcd.setCursor(3, 1);\
+    lcd.print("Journey!");\
+  \} else if (senVal2 == 0 && state == 0) \{\
+    digitalWrite(ledPin, HIGH);\
+    lcd.clear();\
+    lcd.setCursor(2, 0);\
+    lcd.print("Coin is not");\
+    lcd.setCursor(1, 1);\
+    lcd.print("Inserted Yet!");\
+  \} else \{\
+    digitalWrite(ledPin2, LOW); // 
+\f1\fs22 \'ca\'d1\'e8\'a7\'e3\'cb\'e9
+\f0  
+\fs20 LED 
+\f1\fs22 \'b4\'d1\'ba
+\f0\fs20 \
+    digitalWrite(ledPin, LOW);\
+  \}\
+  delay(10);\
+\}\
+}
